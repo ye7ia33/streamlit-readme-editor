@@ -263,6 +263,11 @@ h1,h2,h3 { font-family:'Syne',sans-serif !important; }
   padding:.9rem 1.1rem; margin:.6rem 0 1rem;
 }
 .share-label { font-size:11px; font-weight:700; letter-spacing:.08em; color:#4a6cf7; text-transform:uppercase; margin-bottom:.4rem; }
+.share-url {
+  font-family:'JetBrains Mono',monospace; font-size:12px; color:#7da9f7;
+  background:#13151c; padding:.4rem .7rem; border-radius:4px;
+  border:1px solid #2a2d38; word-break:break-all; flex:1;
+}
 .share-note  { font-size:11px; color:#4a4840; margin-top:.4rem; }
 
 hr.subtle { border:none; border-top:1px solid #2a2d38; margin:1rem 0; }
@@ -394,7 +399,6 @@ if st.session_state.source_mode:
                                file_name=dl_name, mime="text/markdown", use_container_width=True)
         with b2:
             if st.button("🔗 Share", use_container_width=True, key="share_btn"):
-                # Generate share link on click
                 sid = save_share(st.session_state.content, st.session_state.source_name)
                 st.session_state.share_id   = sid
                 st.session_state.show_share = True
@@ -402,16 +406,56 @@ if st.session_state.source_mode:
 
     st.markdown(f'<div style="font-family:JetBrains Mono,monospace;font-size:11px;color:#3a3830;margin-bottom:4px">📄 {st.session_state.source_name}</div>', unsafe_allow_html=True)
 
-    # ── Share panel ────────────────────────────────────────────────────────
+    # ── Share panel — auto-copy on appearance ──────────────────────────────
     if st.session_state.show_share and st.session_state.share_id:
         sid = st.session_state.share_id
         st.markdown(f"""
-        <div class="share-box">
-          <div class="share-label">🔗 Shareable preview link</div>
-          <div class="share-note">Append <code>?share={sid}</code> to your app URL. Anyone with the link sees the rendered preview.</div>
+        <div class="share-box" id="share-box">
+          <div class="share-label">🔗 Share link</div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-top:.4rem;">
+            <div class="share-url" id="share-url">{sid}</div>
+            <button onclick="copyShareLink()" id="copy-btn" style="
+              background:#4a6cf7;color:#fff;border:none;border-radius:4px;
+              padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;
+              font-family:Syne,sans-serif;letter-spacing:.04em;white-space:nowrap;">
+              Copy
+            </button>
+          </div>
+          <div id="copy-feedback" style="font-size:11px;color:#5fcb8a;margin-top:.35rem;display:none;">✓ Copied to clipboard!</div>
+          <div class="share-note" style="margin-top:.4rem;">Share this ID — append <code>?share={sid}</code> to your app URL.</div>
         </div>
+        <script>
+        (function() {{
+          var fullUrl = window.location.origin + window.location.pathname + "?share={sid}";
+          // Update display to show full URL
+          var el = document.getElementById("share-url");
+          if (el) el.textContent = fullUrl;
+
+          // Auto-copy on appearance
+          if (navigator.clipboard) {{
+            navigator.clipboard.writeText(fullUrl).then(function() {{
+              var fb = document.getElementById("copy-feedback");
+              if (fb) {{ fb.style.display = "block"; }}
+            }}).catch(function() {{}});
+          }}
+        }})();
+
+        function copyShareLink() {{
+          var fullUrl = window.location.origin + window.location.pathname + "?share={sid}";
+          if (navigator.clipboard) {{
+            navigator.clipboard.writeText(fullUrl).then(function() {{
+              var btn = document.getElementById("copy-btn");
+              var fb  = document.getElementById("copy-feedback");
+              if (btn) {{ btn.textContent = "Copied!"; btn.style.background = "#1a3a2a"; btn.style.color = "#5fcb8a"; }}
+              if (fb)  {{ fb.style.display = "block"; }}
+              setTimeout(function() {{
+                if (btn) {{ btn.textContent = "Copy"; btn.style.background = "#4a6cf7"; btn.style.color = "#fff"; }}
+              }}, 2000);
+            }});
+          }}
+        }}
+        </script>
         """, unsafe_allow_html=True)
-        st.code(f"?share={sid}", language=None)
 
 st.markdown('<hr class="subtle">', unsafe_allow_html=True)
 
