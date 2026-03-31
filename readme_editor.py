@@ -409,53 +409,71 @@ if st.session_state.source_mode:
     # ── Share panel — auto-copy on appearance ──────────────────────────────
     if st.session_state.show_share and st.session_state.share_id:
         sid = st.session_state.share_id
-        st.markdown(f"""
-        <div class="share-box" id="share-box">
+        import streamlit.components.v1 as components
+        components.html(f"""
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&family=Syne:wght@700&display=swap');
+          body {{ margin:0; padding:0; background:transparent; }}
+          .share-box {{
+            background:#0d0f14; border:1px solid #4a6cf7; border-radius:8px;
+            padding:.9rem 1.1rem; font-family:'Syne',sans-serif;
+          }}
+          .share-label {{ font-size:11px; font-weight:700; letter-spacing:.08em; color:#4a6cf7; text-transform:uppercase; margin-bottom:.5rem; }}
+          .share-row {{ display:flex; align-items:center; gap:.5rem; }}
+          .share-url {{
+            font-family:'JetBrains Mono',monospace; font-size:12px; color:#7da9f7;
+            background:#13151c; padding:.4rem .7rem; border-radius:4px;
+            border:1px solid #2a2d38; word-break:break-all; flex:1;
+          }}
+          .copy-btn {{
+            background:#4a6cf7; color:#fff; border:none; border-radius:4px;
+            padding:5px 14px; font-size:11px; font-weight:700; cursor:pointer;
+            font-family:'Syne',sans-serif; letter-spacing:.04em; white-space:nowrap;
+            transition:background .2s,color .2s;
+          }}
+          .feedback {{ font-size:11px; color:#5fcb8a; margin-top:.4rem; display:none; }}
+          .share-note {{ font-size:11px; color:#4a4840; margin-top:.5rem; }}
+          code {{ background:#13151c; padding:1px 5px; border-radius:3px; color:#7fd1ae; font-family:'JetBrains Mono',monospace; }}
+        </style>
+        <div class="share-box">
           <div class="share-label">🔗 Share link</div>
-          <div style="display:flex;align-items:center;gap:.5rem;margin-top:.4rem;">
-            <div class="share-url" id="share-url">{sid}</div>
-            <button onclick="copyShareLink()" id="copy-btn" style="
-              background:#4a6cf7;color:#fff;border:none;border-radius:4px;
-              padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;
-              font-family:Syne,sans-serif;letter-spacing:.04em;white-space:nowrap;">
-              Copy
-            </button>
+          <div class="share-row">
+            <div class="share-url" id="share-url">building link…</div>
+            <button class="copy-btn" id="copy-btn" onclick="doCopy()">Copy</button>
           </div>
-          <div id="copy-feedback" style="font-size:11px;color:#5fcb8a;margin-top:.35rem;display:none;">✓ Copied to clipboard!</div>
-          <div class="share-note" style="margin-top:.4rem;">Share this ID — append <code>?share={sid}</code> to your app URL.</div>
+          <div class="feedback" id="feedback">✓ Copied to clipboard!</div>
+          <div class="share-note">Anyone with this link sees the rendered preview.</div>
         </div>
         <script>
-        (function() {{
-          var fullUrl = window.location.origin + window.location.pathname + "?share={sid}";
-          // Update display to show full URL
-          var el = document.getElementById("share-url");
-          if (el) el.textContent = fullUrl;
+          var sid = "{sid}";
+          var fullUrl = window.location.ancestorOrigins && window.location.ancestorOrigins[0]
+            ? window.location.ancestorOrigins[0] + "/?share=" + sid
+            : window.location.origin + "/?share=" + sid;
 
-          // Auto-copy on appearance
-          if (navigator.clipboard) {{
-            navigator.clipboard.writeText(fullUrl).then(function() {{
-              var fb = document.getElementById("copy-feedback");
-              if (fb) {{ fb.style.display = "block"; }}
-            }}).catch(function() {{}});
-          }}
-        }})();
+          document.getElementById("share-url").textContent = fullUrl;
 
-        function copyShareLink() {{
-          var fullUrl = window.location.origin + window.location.pathname + "?share={sid}";
-          if (navigator.clipboard) {{
-            navigator.clipboard.writeText(fullUrl).then(function() {{
+          // Auto-copy immediately
+          navigator.clipboard && navigator.clipboard.writeText(fullUrl).then(function() {{
+            document.getElementById("feedback").style.display = "block";
+          }}).catch(function(){{}});
+
+          function doCopy() {{
+            navigator.clipboard && navigator.clipboard.writeText(fullUrl).then(function() {{
               var btn = document.getElementById("copy-btn");
-              var fb  = document.getElementById("copy-feedback");
-              if (btn) {{ btn.textContent = "Copied!"; btn.style.background = "#1a3a2a"; btn.style.color = "#5fcb8a"; }}
-              if (fb)  {{ fb.style.display = "block"; }}
+              var fb  = document.getElementById("feedback");
+              btn.textContent = "Copied!";
+              btn.style.background = "#1a3a2a";
+              btn.style.color = "#5fcb8a";
+              fb.style.display = "block";
               setTimeout(function() {{
-                if (btn) {{ btn.textContent = "Copy"; btn.style.background = "#4a6cf7"; btn.style.color = "#fff"; }}
+                btn.textContent = "Copy";
+                btn.style.background = "#4a6cf7";
+                btn.style.color = "#fff";
               }}, 2000);
             }});
           }}
-        }}
         </script>
-        """, unsafe_allow_html=True)
+        """, height=110)
 
 st.markdown('<hr class="subtle">', unsafe_allow_html=True)
 
