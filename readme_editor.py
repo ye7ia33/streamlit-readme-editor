@@ -167,89 +167,170 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&display=swap');
 
-html, body, [class*="css"] { font-family: 'Syne', sans-serif; }
-.stApp { background-color: #0d0f14; color: #e8e6df; }
+/* ══ THEME TOKENS — dark (default) ══ */
+:root {
+  --bg:          #0d0f14;
+  --bg-2:        #13151c;
+  --bg-3:        #181b24;
+  --border:      #2a2d38;
+  --text:        #e8e6df;
+  --text-2:      #c5c2b8;
+  --text-3:      #8a8780;
+  --text-muted:  #4a4840;
+  --text-faint:  #2e2c28;
+  --accent:      #4a6cf7;
+  --accent-soft: #7da9f7;
+  --green:       #7fd1ae;
+  --code-fg:     #7fd1ae;
+  --pre-fg:      #cdd6f4;
+  --btn-bg:      #e8e6df;
+  --btn-fg:      #0d0f14;
+  --tab-active-bg: #181b24;
+}
 
-[data-testid="stSidebar"] { background-color: #13151c !important; border-right: 1px solid #2a2d38; }
-[data-testid="stSidebar"] * { color: #c5c2b8 !important; }
-h1,h2,h3 { font-family:'Syne',sans-serif !important; }
+/* ══ LIGHT MODE OVERRIDES ══ */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:          #f7f8fc;
+    --bg-2:        #ffffff;
+    --bg-3:        #eef0f6;
+    --border:      #d0d4e4;
+    --text:        #1a1c24;
+    --text-2:      #3a3d4a;
+    --text-3:      #6b6e80;
+    --text-muted:  #9099b0;
+    --text-faint:  #c0c4d4;
+    --accent:      #3558e8;
+    --accent-soft: #2a46c8;
+    --green:       #1a7a50;
+    --code-fg:     #1a6640;
+    --pre-fg:      #2a3a8a;
+    --btn-bg:      #1a1c24;
+    --btn-fg:      #f7f8fc;
+    --tab-active-bg: #eef0f6;
+  }
+}
+
+/* ══ Also respect Streamlit's data-theme attribute ══ */
+[data-theme="light"] {
+  --bg:          #f7f8fc;
+  --bg-2:        #ffffff;
+  --bg-3:        #eef0f6;
+  --border:      #d0d4e4;
+  --text:        #1a1c24;
+  --text-2:      #3a3d4a;
+  --text-3:      #6b6e80;
+  --text-muted:  #9099b0;
+  --text-faint:  #c0c4d4;
+  --accent:      #3558e8;
+  --accent-soft: #2a46c8;
+  --green:       #1a7a50;
+  --code-fg:     #1a6640;
+  --pre-fg:      #2a3a8a;
+  --btn-bg:      #1a1c24;
+  --btn-fg:      #f7f8fc;
+  --tab-active-bg: #eef0f6;
+}
+
+html, body, [class*="css"] { font-family: 'Syne', sans-serif; }
+.stApp { background-color: var(--bg) !important; color: var(--text) !important; }
+
+[data-testid="stSidebar"] {
+  background-color: var(--bg-2) !important;
+  border-right: 1px solid var(--border) !important;
+}
+[data-testid="stSidebar"] * { color: var(--text-2) !important; }
+h1,h2,h3 { font-family:'Syne',sans-serif !important; color: var(--text) !important; }
 
 .stButton > button {
-  background:#e8e6df !important; color:#0d0f14 !important;
+  background: var(--btn-bg) !important;
+  color: var(--btn-fg) !important;
   font-family:'Syne',sans-serif !important; font-weight:700 !important;
   border:none !important; border-radius:4px !important;
   padding:0.45rem 1.2rem !important; letter-spacing:.04em !important;
   transition:opacity .15s !important;
 }
-.stButton > button:hover { opacity:.78 !important; }
+.stButton > button:hover { opacity:.75 !important; }
 
 [data-testid="stDownloadButton"] > button {
-  background:#4a6cf7 !important; color:#fff !important;
+  background: var(--accent) !important; color:#fff !important;
   font-family:'Syne',sans-serif !important; font-weight:700 !important;
   border:none !important; border-radius:4px !important;
   padding:0.45rem 1.2rem !important;
 }
 
 .stTextArea textarea {
-  background-color:#181b24 !important; color:#e8e6df !important;
+  background-color: var(--bg-3) !important;
+  color: var(--text) !important;
   font-family:'JetBrains Mono',monospace !important; font-size:13.5px !important;
-  border:1px solid #2a2d38 !important; border-radius:6px !important;
+  border:1px solid var(--border) !important; border-radius:6px !important;
   line-height:1.6 !important;
 }
 .stTextInput > div > div > input {
-  background-color:#181b24 !important; color:#e8e6df !important;
-  border:1px solid #2a2d38 !important; border-radius:4px !important;
+  background-color: var(--bg-3) !important;
+  color: var(--text) !important;
+  border:1px solid var(--border) !important; border-radius:4px !important;
 }
 [data-testid="stFileUploader"] {
-  background:#181b24 !important; border:1.5px dashed #2a2d38 !important;
+  background: var(--bg-3) !important;
+  border:1.5px dashed var(--border) !important;
   border-radius:8px !important; padding:.6rem !important;
 }
 
 /* ── Preview pane ── */
 .readme-preview {
-  background:#181b24; border:1px solid #2a2d38; border-radius:8px;
-  padding:2rem 2.6rem; min-height:460px; font-size:15px; line-height:1.8; color:#d4d0c8;
+  background: var(--bg-3);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:2rem 2.6rem; min-height:460px; font-size:15px; line-height:1.8;
+  color: var(--text-2);
 }
-.readme-preview h1 { font-size:2rem; border-bottom:2px solid #2a2d38; padding-bottom:.4rem; margin:0 0 1.2rem; color:#f0ede6; font-family:'Syne',sans-serif; }
-.readme-preview h2 { font-size:1.4rem; border-bottom:1px solid #2a2d38; padding-bottom:.25rem; margin:1.8rem 0 .8rem; color:#e8e4d9; font-family:'Syne',sans-serif; }
-.readme-preview h3 { font-size:1.1rem; margin:1.4rem 0 .6rem; color:#d4d0c5; font-family:'Syne',sans-serif; }
-.readme-preview h4,.readme-preview h5,.readme-preview h6 { color:#bbb8b0; font-family:'Syne',sans-serif; margin:1rem 0 .4rem; }
+.readme-preview h1 { font-size:2rem; border-bottom:2px solid var(--border); padding-bottom:.4rem; margin:0 0 1.2rem; color:var(--text); font-family:'Syne',sans-serif; }
+.readme-preview h2 { font-size:1.4rem; border-bottom:1px solid var(--border); padding-bottom:.25rem; margin:1.8rem 0 .8rem; color:var(--text); font-family:'Syne',sans-serif; }
+.readme-preview h3 { font-size:1.1rem; margin:1.4rem 0 .6rem; color:var(--text-2); font-family:'Syne',sans-serif; }
+.readme-preview h4,.readme-preview h5,.readme-preview h6 { color:var(--text-2); font-family:'Syne',sans-serif; margin:1rem 0 .4rem; }
 .readme-preview p  { margin:.5rem 0 1rem; }
 .readme-preview code {
-  background:#0d0f14; padding:2px 6px; border-radius:4px;
-  font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#7fd1ae;
+  background: var(--bg);
+  padding:2px 6px; border-radius:4px;
+  font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--code-fg);
 }
 .readme-preview pre {
-  background:#0d0f14; padding:1.1rem 1.3rem; border-radius:6px;
-  overflow-x:auto; border-left:3px solid #4a6cf7; margin:1rem 0;
+  background: var(--bg);
+  padding:1.1rem 1.3rem; border-radius:6px;
+  overflow-x:auto; border-left:3px solid var(--accent); margin:1rem 0;
 }
-.readme-preview pre code { background:transparent; padding:0; color:#cdd6f4; font-size:13px; }
+.readme-preview pre code { background:transparent; padding:0; color:var(--pre-fg); font-size:13px; }
 .readme-preview blockquote {
-  border-left:3px solid #4a6cf7; margin:1rem 0; padding:.6rem 1rem;
-  color:#8a8780; font-style:italic; background:#13151c; border-radius:0 4px 4px 0;
+  border-left:3px solid var(--accent); margin:1rem 0; padding:.6rem 1rem;
+  color:var(--text-3); font-style:italic; background:var(--bg-2); border-radius:0 4px 4px 0;
 }
-.readme-preview a { color:#7da9f7; }
-.readme-preview hr { border:none; border-top:1px solid #2a2d38; margin:1.5rem 0; }
+.readme-preview a { color:var(--accent-soft); }
+.readme-preview hr { border:none; border-top:1px solid var(--border); margin:1.5rem 0; }
 .readme-preview table { width:100%; border-collapse:collapse; font-size:14px; margin:1rem 0; }
-.readme-preview th { background:#0d0f14; padding:8px 12px; text-align:left; border:1px solid #2a2d38; color:#e8e4d9; }
-.readme-preview td { padding:8px 12px; border:1px solid #2a2d38; }
-.readme-preview tr:nth-child(even) td { background:#14161f; }
+.readme-preview th { background:var(--bg); padding:8px 12px; text-align:left; border:1px solid var(--border); color:var(--text); }
+.readme-preview td { padding:8px 12px; border:1px solid var(--border); color:var(--text-2); }
+.readme-preview tr:nth-child(even) td { background:var(--bg-2); }
 .readme-preview img { max-width:100%; border-radius:6px; }
 .readme-preview ul { padding-left:1.5rem; margin:.4rem 0; list-style:disc; }
 .readme-preview ol { padding-left:1.5rem; margin:.4rem 0; list-style:decimal; }
 .readme-preview li { margin:.25rem 0; }
-.readme-preview strong { color:#e8e6df; font-weight:700; }
-.readme-preview em { font-style:italic; color:#b8b5ae; }
+.readme-preview strong { color:var(--text); font-weight:700; }
+.readme-preview em { font-style:italic; color:var(--text-3); }
 
 /* ── Tabs ── */
-.stTabs [data-baseweb="tab-list"] { gap:2px; border-bottom:1px solid #2a2d38 !important; }
+.stTabs [data-baseweb="tab-list"] { gap:2px; border-bottom:1px solid var(--border) !important; }
 .stTabs [data-baseweb="tab"] {
-  background:transparent !important; color:#6b6960 !important;
+  background:transparent !important; color:var(--text-muted) !important;
   font-family:'Syne',sans-serif !important; font-weight:700 !important;
   font-size:12px !important; letter-spacing:.07em !important;
   border-radius:4px 4px 0 0 !important; padding:.4rem 1.1rem !important; border:none !important;
 }
-.stTabs [aria-selected="true"] { background:#181b24 !important; color:#e8e6df !important; border-bottom:2px solid #4a6cf7 !important; }
+.stTabs [aria-selected="true"] {
+  background: var(--tab-active-bg) !important;
+  color: var(--text) !important;
+  border-bottom:2px solid var(--accent) !important;
+}
 
 /* ── Badges ── */
 .badge { display:inline-block; padding:3px 9px; border-radius:100px; font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
@@ -257,33 +338,20 @@ h1,h2,h3 { font-family:'Syne',sans-serif !important; }
 .badge-live   { background:#2a1a3a; color:#a07afa; }
 .badge-shared { background:#1a3a2a; color:#7fd1ae; }
 
-/* ── Share box ── */
-.share-box {
-  background:#0d0f14; border:1px solid #4a6cf7; border-radius:8px;
-  padding:.9rem 1.1rem; margin:.6rem 0 1rem;
-}
-.share-label { font-size:11px; font-weight:700; letter-spacing:.08em; color:#4a6cf7; text-transform:uppercase; margin-bottom:.4rem; }
-.share-url {
-  font-family:'JetBrains Mono',monospace; font-size:12px; color:#7da9f7;
-  background:#13151c; padding:.4rem .7rem; border-radius:4px;
-  border:1px solid #2a2d38; word-break:break-all; flex:1;
-}
-.share-note  { font-size:11px; color:#4a4840; margin-top:.4rem; }
-
-hr.subtle { border:none; border-top:1px solid #2a2d38; margin:1rem 0; }
+hr.subtle { border:none; border-top:1px solid var(--border); margin:1rem 0; }
 
 /* ── Welcome ── */
 .welcome-card {
-  background:#13151c; border:1px solid #2a2d38; border-radius:12px;
+  background: var(--bg-2); border:1px solid var(--border); border-radius:12px;
   padding:2.4rem; text-align:center; max-width:520px; margin:2.5rem auto;
 }
 .welcome-card .icon { font-size:2.8rem; margin-bottom:.8rem; }
-.welcome-card h2 { font-size:1.35rem; color:#e8e6df; margin-bottom:.4rem; }
-.welcome-card p  { font-size:.88rem; color:#6b6960; line-height:1.65; margin-bottom:1rem; }
-.step { background:#0d0f14; border-radius:7px; padding:.7rem .9rem; margin:.45rem 0; text-align:left; font-size:.83rem; color:#c5c2b8; }
-.step strong { color:#e8e6df; }
+.welcome-card h2 { font-size:1.35rem; color:var(--text); margin-bottom:.4rem; }
+.welcome-card p  { font-size:.88rem; color:var(--text-3); line-height:1.65; margin-bottom:1rem; }
+.step { background:var(--bg); border-radius:7px; padding:.7rem .9rem; margin:.45rem 0; text-align:left; font-size:.83rem; color:var(--text-2); }
+.step strong { color:var(--text); }
 
-.stats { color:#2e2c28; font-size:11.5px; font-family:'JetBrains Mono',monospace; margin-top:.5rem; }
+.stats { color:var(--text-faint); font-size:11.5px; font-family:'JetBrains Mono',monospace; margin-top:.5rem; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -413,27 +481,40 @@ if st.session_state.source_mode:
         components.html(f"""
         <style>
           @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&family=Syne:wght@700&display=swap');
-          body {{ margin:0; padding:0; background:transparent; }}
-          .share-box {{
-            background:#0d0f14; border:1px solid #4a6cf7; border-radius:8px;
-            padding:.9rem 1.1rem; font-family:'Syne',sans-serif;
+          :root {{
+            --bg:       #0d0f14; --bg-2: #13151c; --border: #2a2d38;
+            --text:     #e8e6df; --text-3: #4a4840;
+            --accent:   #4a6cf7; --url-fg: #7da9f7; --green: #5fcb8a;
+            --green-bg: #1a3a2a;
           }}
-          .share-label {{ font-size:11px; font-weight:700; letter-spacing:.08em; color:#4a6cf7; text-transform:uppercase; margin-bottom:.5rem; }}
+          @media (prefers-color-scheme: light) {{
+            :root {{
+              --bg:     #f7f8fc; --bg-2: #eef0f6; --border: #d0d4e4;
+              --text:   #1a1c24; --text-3: #9099b0;
+              --accent: #3558e8; --url-fg: #2a46c8; --green: #1a7a50;
+              --green-bg: #d0f0e0;
+            }}
+          }}
+          body {{ margin:0; padding:0; background:transparent; font-family:'Syne',sans-serif; }}
+          .share-box {{
+            background:var(--bg); border:1px solid var(--accent); border-radius:8px;
+            padding:.9rem 1.1rem;
+          }}
+          .share-label {{ font-size:11px; font-weight:700; letter-spacing:.08em; color:var(--accent); text-transform:uppercase; margin-bottom:.5rem; }}
           .share-row {{ display:flex; align-items:center; gap:.5rem; }}
           .share-url {{
-            font-family:'JetBrains Mono',monospace; font-size:12px; color:#7da9f7;
-            background:#13151c; padding:.4rem .7rem; border-radius:4px;
-            border:1px solid #2a2d38; word-break:break-all; flex:1;
+            font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--url-fg);
+            background:var(--bg-2); padding:.4rem .7rem; border-radius:4px;
+            border:1px solid var(--border); word-break:break-all; flex:1;
           }}
           .copy-btn {{
-            background:#4a6cf7; color:#fff; border:none; border-radius:4px;
+            background:var(--accent); color:#fff; border:none; border-radius:4px;
             padding:5px 14px; font-size:11px; font-weight:700; cursor:pointer;
             font-family:'Syne',sans-serif; letter-spacing:.04em; white-space:nowrap;
-            transition:background .2s,color .2s;
+            transition:background .2s, color .2s;
           }}
-          .feedback {{ font-size:11px; color:#5fcb8a; margin-top:.4rem; display:none; }}
-          .share-note {{ font-size:11px; color:#4a4840; margin-top:.5rem; }}
-          code {{ background:#13151c; padding:1px 5px; border-radius:3px; color:#7fd1ae; font-family:'JetBrains Mono',monospace; }}
+          .feedback {{ font-size:11px; color:var(--green); margin-top:.4rem; display:none; }}
+          .share-note {{ font-size:11px; color:var(--text-3); margin-top:.5rem; }}
         </style>
         <div class="share-box">
           <div class="share-label">🔗 Share link</div>
@@ -446,13 +527,13 @@ if st.session_state.source_mode:
         </div>
         <script>
           var sid = "{sid}";
-          var fullUrl = window.location.ancestorOrigins && window.location.ancestorOrigins[0]
-            ? window.location.ancestorOrigins[0] + "/?share=" + sid
-            : window.location.origin + "/?share=" + sid;
+          var origin = (window.location.ancestorOrigins && window.location.ancestorOrigins[0])
+            ? window.location.ancestorOrigins[0]
+            : window.location.origin;
+          var fullUrl = origin + "/?share=" + sid;
 
           document.getElementById("share-url").textContent = fullUrl;
 
-          // Auto-copy immediately
           navigator.clipboard && navigator.clipboard.writeText(fullUrl).then(function() {{
             document.getElementById("feedback").style.display = "block";
           }}).catch(function(){{}});
@@ -462,18 +543,18 @@ if st.session_state.source_mode:
               var btn = document.getElementById("copy-btn");
               var fb  = document.getElementById("feedback");
               btn.textContent = "Copied!";
-              btn.style.background = "#1a3a2a";
-              btn.style.color = "#5fcb8a";
+              btn.style.background = "var(--green-bg)";
+              btn.style.color = "var(--green)";
               fb.style.display = "block";
               setTimeout(function() {{
                 btn.textContent = "Copy";
-                btn.style.background = "#4a6cf7";
+                btn.style.background = "var(--accent)";
                 btn.style.color = "#fff";
               }}, 2000);
             }});
           }}
         </script>
-        """, height=110)
+        """, height=115)
 
 st.markdown('<hr class="subtle">', unsafe_allow_html=True)
 
